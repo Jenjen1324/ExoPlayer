@@ -17,7 +17,9 @@ package com.google.android.exoplayer2.source.hls;
 
 import android.net.Uri;
 import android.os.Handler;
+
 import androidx.annotation.Nullable;
+
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.FormatHolder;
@@ -47,6 +49,7 @@ import com.google.android.exoplayer2.util.Assertions;
 import com.google.android.exoplayer2.util.Log;
 import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.exoplayer2.util.Util;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -782,43 +785,56 @@ import java.util.Map;
   public TrackOutput track(int id, int type) {
     int trackCount = sampleQueues.length;
 
-    // Audio and video tracks are handled manually to ignore ids.
-    if (type == C.TRACK_TYPE_AUDIO) {
-      if (audioSampleQueueIndex != C.INDEX_UNSET) {
-        if (audioSampleQueueMappingDone) {
-          return sampleQueueTrackIds[audioSampleQueueIndex] == id
-              ? sampleQueues[audioSampleQueueIndex]
-              : createDummyTrackOutput(id, type);
-        }
-        audioSampleQueueMappingDone = true;
-        sampleQueueTrackIds[audioSampleQueueIndex] = id;
-        return sampleQueues[audioSampleQueueIndex];
-      } else if (tracksEnded) {
-        return createDummyTrackOutput(id, type);
-      }
-    } else if (type == C.TRACK_TYPE_VIDEO) {
-      if (videoSampleQueueIndex != C.INDEX_UNSET) {
-        if (videoSampleQueueMappingDone) {
-          return sampleQueueTrackIds[videoSampleQueueIndex] == id
-              ? sampleQueues[videoSampleQueueIndex]
-              : createDummyTrackOutput(id, type);
-        }
-        videoSampleQueueMappingDone = true;
-        sampleQueueTrackIds[videoSampleQueueIndex] = id;
-        return sampleQueues[videoSampleQueueIndex];
-      } else if (tracksEnded) {
-        return createDummyTrackOutput(id, type);
-      }
-    } else /* sparse track */ {
-      for (int i = 0; i < trackCount; i++) {
-        if (sampleQueueTrackIds[i] == id) {
-          return sampleQueues[i];
-        }
-      }
-      if (tracksEnded) {
-        return createDummyTrackOutput(id, type);
+    for (int i = 0; i < trackCount; i++) {
+      if (sampleQueueTrackIds[i] == id) {
+        return sampleQueues[i];
       }
     }
+
+    if (tracksEnded) {
+      Log.w(TAG, "Unmapped track with id " + id + " of type " + type);
+      return new DummyTrackOutput();
+    }
+
+
+//    // Audio and video tracks are handled manually to ignore ids.
+//    if (type == C.TRACK_TYPE_AUDIO) {
+//      if (audioSampleQueueIndex != C.INDEX_UNSET) {
+//        if (audioSampleQueueMappingDone) {
+//          return sampleQueueTrackIds[audioSampleQueueIndex] == id
+//              ? sampleQueues[audioSampleQueueIndex]
+//              : createDummyTrackOutput(id, type);
+//        }
+//        audioSampleQueueMappingDone = true;
+//        sampleQueueTrackIds[audioSampleQueueIndex] = id;
+//        return sampleQueues[audioSampleQueueIndex];
+//      } else if (tracksEnded) {
+//        return createDummyTrackOutput(id, type);
+//      }
+//    } else if (type == C.TRACK_TYPE_VIDEO) {
+//      if (videoSampleQueueIndex != C.INDEX_UNSET) {
+//        if (videoSampleQueueMappingDone) {
+//          return sampleQueueTrackIds[videoSampleQueueIndex] == id
+//              ? sampleQueues[videoSampleQueueIndex]
+//              : createDummyTrackOutput(id, type);
+//        }
+//        videoSampleQueueMappingDone = true;
+//        sampleQueueTrackIds[videoSampleQueueIndex] = id;
+//        return sampleQueues[videoSampleQueueIndex];
+//      } else if (tracksEnded) {
+//        return createDummyTrackOutput(id, type);
+//      }
+//    } else /* sparse track */ {
+//      for (int i = 0; i < trackCount; i++) {
+//        if (sampleQueueTrackIds[i] == id) {
+//          return sampleQueues[i];
+//        }
+//      }
+//      if (tracksEnded) {
+//        return createDummyTrackOutput(id, type);
+//      }
+//    }
+
     SampleQueue trackOutput = new PrivTimestampStrippingSampleQueue(allocator);
     trackOutput.setSampleOffsetUs(sampleOffsetUs);
     trackOutput.sourceId(chunkUid);
@@ -831,13 +847,13 @@ import java.util.Map;
     sampleQueueIsAudioVideoFlags[trackCount] = type == C.TRACK_TYPE_AUDIO
         || type == C.TRACK_TYPE_VIDEO;
     haveAudioVideoSampleQueues |= sampleQueueIsAudioVideoFlags[trackCount];
-    if (type == C.TRACK_TYPE_AUDIO) {
-      audioSampleQueueMappingDone = true;
-      audioSampleQueueIndex = trackCount;
-    } else if (type == C.TRACK_TYPE_VIDEO) {
-      videoSampleQueueMappingDone = true;
-      videoSampleQueueIndex = trackCount;
-    }
+//    if (type == C.TRACK_TYPE_AUDIO) {
+//      audioSampleQueueMappingDone = true;
+//      audioSampleQueueIndex = trackCount;
+//    } else if (type == C.TRACK_TYPE_VIDEO) {
+//      videoSampleQueueMappingDone = true;
+//      videoSampleQueueIndex = trackCount;
+//    }
     if (getTrackTypeScore(type) > getTrackTypeScore(primarySampleQueueType)) {
       primarySampleQueueIndex = trackCount;
       primarySampleQueueType = type;

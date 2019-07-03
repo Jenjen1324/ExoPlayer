@@ -15,12 +15,12 @@
  */
 package com.google.android.exoplayer2.extractor.ts;
 
-import static com.google.android.exoplayer2.extractor.ts.TsPayloadReader.FLAG_PAYLOAD_UNIT_START_INDICATOR;
-
-import androidx.annotation.IntDef;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
+
+import androidx.annotation.IntDef;
+
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ParserException;
 import com.google.android.exoplayer2.extractor.Extractor;
@@ -39,6 +39,7 @@ import com.google.android.exoplayer2.util.ParsableBitArray;
 import com.google.android.exoplayer2.util.ParsableByteArray;
 import com.google.android.exoplayer2.util.TimestampAdjuster;
 import com.google.android.exoplayer2.util.Util;
+
 import java.io.IOException;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -47,6 +48,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import static com.google.android.exoplayer2.extractor.ts.TsPayloadReader.FLAG_PAYLOAD_UNIT_START_INDICATOR;
 
 /**
  * Extracts data from the MPEG-2 TS container format.
@@ -583,18 +586,15 @@ public final class TsExtractor implements Extractor {
         }
         remainingEntriesLength -= esInfoLength + 5;
 
-        int trackId = mode == MODE_HLS ? streamType : elementaryPid;
+        int trackId = elementaryPid;
         if (trackIds.get(trackId)) {
           continue;
         }
 
         TsPayloadReader reader = mode == MODE_HLS && streamType == TS_STREAM_TYPE_ID3 ? id3Reader
             : payloadReaderFactory.createPayloadReader(streamType, esInfo);
-        if (mode != MODE_HLS
-            || elementaryPid < trackIdToPidScratch.get(trackId, MAX_PID_PLUS_ONE)) {
-          trackIdToPidScratch.put(trackId, elementaryPid);
-          trackIdToReaderScratch.put(trackId, reader);
-        }
+        trackIdToPidScratch.put(trackId, elementaryPid);
+        trackIdToReaderScratch.put(trackId, reader);
       }
 
       int trackIdCount = trackIdToPidScratch.size();
