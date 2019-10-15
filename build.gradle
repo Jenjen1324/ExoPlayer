@@ -44,6 +44,9 @@ allprojects {
         }
         buildDir = "${externalBuildDir}/${project.name}"
     }
+
+    group = 'net.init7.exoplayer.hlsmultitrack'
+    version = '2.10.2-hls-multi-track'
 }
 
 apply from: 'javadoc_combined.gradle'
