@@ -1,3 +1,77 @@
+# Usage of the aar libraries
+
+Since .aar files don't ship their own dependencies, these must be included manually.
+
+### All artifacts depend on the following:
+
+```gradle
+implementation 'androidx.annotation:annotation:1.0.2'
+```
+
+ - library-core (make sure you include this)
+
+### Specific dependencies
+
+**library-ui:**
+
+```gradle
+    implementation 'androidx.media:media:1.0.0'
+```
+
+**extension-cast:**
+
+ - library-ui
+
+**extension-cronet:**
+
+```gradle
+    api 'org.chromium.net:cronet-embedded:73.3683.76'
+```
+
+**extension-gvr:**
+
+```gradle
+    api 'com.google.vr:sdk-base:1.190.0'
+```
+
+**extension-ima:**
+
+```gradle
+    api 'com.google.ads.interactivemedia.v3:interactivemedia:3.11.2'
+    implementation 'com.google.android.gms:play-services-ads-identifier:16.0.0'
+```
+
+**extension-jobdispatcher:**
+
+```gradle
+    implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
+```
+
+**extension-leanback:**
+
+```gradle
+    implementation 'androidx.leanback:leanback:1.0.0'
+```
+
+**extension-mediasession:**
+
+```gradle
+    api 'androidx.media:media:1.0.1'
+```
+
+**extension-okhttp:**
+
+```gradle
+    api 'com.squareup.okhttp3:okhttp:3.12.1'
+```
+
+**extension-rtmp:**
+
+```gradle
+    implementation 'net.butterflytv.utils:rtmp-client:3.0.1'
+```
+
+
 # ExoPlayer #
 
 ExoPlayer is an application level media player for Android. It provides an
