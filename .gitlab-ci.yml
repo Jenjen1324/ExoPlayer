@@ -30,8 +30,8 @@ build:
     - ./gradlew :extension-opus:assembleRelease
     - ./gradlew :extension-rtmp:assembleRelease
     - ./gradlew :extension-vp9:assembleRelease
-    - cp library/*/buildout/outputs/*-release.aar ./aar/
-    - cp library/*/extensions/outputs/*-release.aar ./aar/
+    - cp library/*/buildout/outputs/aar/*-release.aar ./aar/
+    - cp extensions/*/buildout/outputs/*-release.aar ./aar/
   artifacts:
     paths:
       - 'aar/'
