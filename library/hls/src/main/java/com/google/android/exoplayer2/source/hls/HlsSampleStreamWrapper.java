@@ -937,7 +937,8 @@ import org.checkerframework.checker.nullness.qual.RequiresNonNull;
   @Override
   public TrackOutput track(int id, int type) {
     @Nullable TrackOutput trackOutput = null;
-    if (MAPPABLE_TYPES.contains(type)) {
+    // if (MAPPABLE_TYPES.contains(type)) {
+    if (false) { /// Mod disable remapping of track outputs to allow multiple elementary streams of the same type
       // Track types in MAPPABLE_TYPES are handled manually to ignore IDs.
       trackOutput = getMappedTrackOutput(id, type);
     } else /* non-mappable type track */ {
